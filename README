@@ -1,0 +1,12 @@
+
+Jabber Plugin for Grails
+-------------------------
+
+# What is the Jabber Plugin?
+
+This is a small Grails plugin for Jabber which allows you to send and receive Jabber messages in your Grails app.
+
+# License
+
+The Jabber Plugin is licensed under the Apache version 2. Knock yourself out.
+ 
