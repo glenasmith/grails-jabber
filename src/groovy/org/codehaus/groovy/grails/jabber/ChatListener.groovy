@@ -4,6 +4,7 @@ import org.jivesoftware.smack.Chat
 import org.jivesoftware.smack.ConnectionConfiguration
 import org.jivesoftware.smack.PacketListener
 import org.jivesoftware.smack.XMPPConnection
+import org.jivesoftware.smack.XMPPException
 import org.jivesoftware.smack.filter.PacketFilter
 import org.jivesoftware.smack.filter.PacketTypeFilter
 import org.jivesoftware.smack.packet.Message
@@ -107,10 +108,8 @@ class ChatListener {
             chat.sendMessage(msgObj)
 
 
-        } catch (Exception e) {
-
-            log.error "Failed to send Jabber message", e
-
+        } catch (XMPPException e) {
+            log.error "Failed to send Jabber message, the xmpp error code is ${e.xmppError?.code} and error message is ${e.xmppError?.message}", e
         }
 
     }
