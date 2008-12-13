@@ -9,6 +9,5 @@
     <resource>Config</resource>
     <resource>DataSource</resource>
     <resource>UrlMappings</resource>
-    <resource>DemoService</resource>
   </resources>
 </plugin>
