@@ -90,12 +90,16 @@ This plugin provides the opportunity to send and receive Chat messages via the J
 
         application.serviceClasses?.each { service ->
             def mc = service.metaClass
-            def listener = applicationContext.getBean("${service.propertyName}JabberListener")
-            if (listener) {
+            
+            def serviceClass = service.getClazz()
+    		def exposeList = GrailsClassUtils.getStaticPropertyValue(serviceClass, 'expose')
+    		if (exposeList != null && exposeList.contains('jabber')) {
+                def listener = applicationContext.getBean("${service.propertyName}JabberListener")
                 mc.sendJabberMessage = sendJabberMessage.curry(listener)
             } else {
-			    mc.sendJabberMessage = sendJabberMessage.curry(cl)
+                mc.sendJabberMessage = sendJabberMessage.curry(cl)
             }
+            
         }
 		application.controllerClasses?.each { controller ->
     	   def mc = controller.metaClass
