@@ -94,24 +94,15 @@ class ChatListener {
 
 
     def sendJabberMessage(String to, String msg) {
+        if (!connection)
+            connect()
 
-        try {
+        Chat chat = connection.chatManager.createChat(to, null)
+        def msgObj = new Message(to, Message.Type.chat)
+        msgObj.setBody(msg)
 
-            if (!connection)
-                connect()
-
-            Chat chat = connection.chatManager.createChat(to, null)
-            def msgObj = new Message(to, Message.Type.chat)
-            msgObj.setBody(msg)
-
-            log.debug "Sending Jabber message to ${to} with content ${msg}"
-            chat.sendMessage(msgObj)
-
-
-        } catch (XMPPException e) {
-            log.error "Failed to send Jabber message, the xmpp error code is ${e.xmppError?.code} and error message is ${e.xmppError?.message}", e
-        }
-
+        log.debug "Sending Jabber message to ${to} with content ${msg}"
+        chat.sendMessage(msgObj)
     }
 
 
