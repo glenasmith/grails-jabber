@@ -1,4 +1,4 @@
-<plugin name='jabber' version='0.1'>
+<plugin name='jabber' version='0.1' grailsVersion='1.1.1 &gt; *'>
   <author>Glen Smith</author>
   <authorEmail>glen@bytecode.com.au</authorEmail>
   <title>Jabber Plugin</title>
@@ -10,4 +10,5 @@
     <resource>DataSource</resource>
     <resource>UrlMappings</resource>
   </resources>
+  <dependencies />
 </plugin>
