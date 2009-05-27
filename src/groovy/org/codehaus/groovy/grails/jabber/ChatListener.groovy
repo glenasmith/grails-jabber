@@ -42,20 +42,16 @@ class ChatListener {
 
         connection = new XMPPConnection(cc)
 
+        log.debug "Connecting to Jabber server"
+        connection.connect()
+        connection.login(userName, password, userName + Long.toHexString(System.currentTimeMillis()))
+        log.debug "Connected to Jabber server: ${connection.isConnected()}"
 
+        
 
-        try {
+        log.error "Jabber Connection failed: $e.message", e
 
-            log.debug "Connecting to Jabber serverÉ"
-            connection.connect()
-            connection.login(userName, password, userName + Long.toHexString(System.currentTimeMillis()))
-           log.debug "Connected to Jabber server: ${connection.isConnected()}"
-
-        } catch (Exception e) {
-
-            log.error "Jabber Connection failed: $e.message", e
-
-        }
+        
 
     }
 
@@ -63,18 +59,17 @@ class ChatListener {
 
         if (!connection)
             connect()
-            //throw new RuntimeException("Must have an active connection before adding chat listener")
 
         PacketFilter msgFilter = new PacketTypeFilter(Message.class)
 
         def myListener = [processPacket: { packet ->
 
-            log.debug "Received message from ${packet.from}, subject: ${packet.subject}, body: ${packet.body}"
-            // callback(packet)
+                log.debug "Received message from ${packet.from}, subject: ${packet.subject}, body: ${packet.body}"
+                // callback(packet)
 
-            targetService[listenerMethod].call(packet)
+                targetService[listenerMethod].call(packet)
 
-        }] as PacketListener
+            }] as PacketListener
 
         log.debug "Adding Jabber listnener..."
         connection.addPacketListener(myListener, msgFilter)
@@ -87,7 +82,7 @@ class ChatListener {
     def disconnect() {
 
         if (connection && connection.isConnected())
-            connection.disconnect()
+        connection.disconnect()
 
     }
 
@@ -95,7 +90,7 @@ class ChatListener {
 
     def sendJabberMessage(String to, String msg) {
         if (!connection)
-            connect()
+           connect()
 
         Chat chat = connection.chatManager.createChat(to, null)
         def msgObj = new Message(to, Message.Type.chat)

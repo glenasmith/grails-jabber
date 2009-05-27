@@ -21,14 +21,14 @@ This plugin provides the opportunity to send and receive Chat messages via the J
     def doWithSpring = {
 
         application.serviceClasses?.each { service ->
-			def serviceClass = service.getClazz()
-			def exposeList = GrailsClassUtils.getStaticPropertyValue(serviceClass, 'expose')
-			if (exposeList != null && exposeList.contains('jabber')) {
-				println "adding Jabber listener for ${service.shortName} to Spring"
+            def serviceClass = service.getClazz()
+            def exposeList = GrailsClassUtils.getStaticPropertyValue(serviceClass, 'expose')
+            if (exposeList != null && exposeList.contains('jabber')) {
+                println "adding Jabber listener for ${service.shortName} to Spring"
 
-				def method = GrailsClassUtils.getStaticPropertyValue(serviceClass, 'jabberListenerMethod')
-				if (!method)
-					method = "onJabberMessage"
+                def method = GrailsClassUtils.getStaticPropertyValue(serviceClass, 'jabberListenerMethod')
+                if (!method)
+                method = "onJabberMessage"
 
 				"${service.propertyName}JabberListener"(org.codehaus.groovy.grails.jabber.ChatListener) {
                     host = CFG.config.chat.host
@@ -42,23 +42,23 @@ This plugin provides the opportunity to send and receive Chat messages via the J
                 }
 
 				
-			}
-		}
+            }
+        }
 
     }
    
     def doWithApplicationContext = { applicationContext ->
 
         application.serviceClasses?.each { service ->
-		def serviceClass = service.getClazz()
-		def exposeList = GrailsClassUtils.getStaticPropertyValue(serviceClass, 'expose')
-		if (exposeList!=null && exposeList.contains('jabber')) {
-				println "Starting Jabber listener for ${service.shortName}"
+            def serviceClass = service.getClazz()
+            def exposeList = GrailsClassUtils.getStaticPropertyValue(serviceClass, 'expose')
+            if (exposeList!=null && exposeList.contains('jabber')) {
+                println "Starting Jabber listener for ${service.shortName}"
                 def listener = applicationContext.getBean("${service.propertyName}JabberListener")
                 listener.listen()
                 println "Added listener ok ${listener.dump()}"
             }
-		}
+        }
 
 
     }
@@ -77,23 +77,23 @@ This plugin provides the opportunity to send and receive Chat messages via the J
             cl.sendJabberMessage(to, message)
         }
 
-	}
+    }
 	                                      
     def doWithDynamicMethods = { ctx ->
 
         ChatListener cl = new ChatListener(host: CFG.config.chat.host,
-                                serviceName: CFG.config.chat.serviceName,
-                                userName: CFG.config.chat.username,
-                                password: CFG.config.chat.password
-                           )
+            serviceName: CFG.config.chat.serviceName,
+            userName: CFG.config.chat.username,
+            password: CFG.config.chat.password
+        )
 
 
         application.serviceClasses?.each { service ->
             def mc = service.metaClass
             
             def serviceClass = service.getClazz()
-    		def exposeList = GrailsClassUtils.getStaticPropertyValue(serviceClass, 'expose')
-    		if (exposeList != null && exposeList.contains('jabber')) {
+            def exposeList = GrailsClassUtils.getStaticPropertyValue(serviceClass, 'expose')
+            if (exposeList != null && exposeList.contains('jabber')) {
                 def listener = applicationContext.getBean("${service.propertyName}JabberListener")
                 mc.sendJabberMessage = sendJabberMessage.curry(listener)
             } else {
@@ -101,9 +101,9 @@ This plugin provides the opportunity to send and receive Chat messages via the J
             }
             
         }
-		application.controllerClasses?.each { controller ->
-    	   def mc = controller.metaClass
-		   mc.sendJabberMessage = sendJabberMessage.curry(cl)
+        application.controllerClasses?.each { controller ->
+            def mc = controller.metaClass
+            mc.sendJabberMessage = sendJabberMessage.curry(cl)
     	}
 
     }
