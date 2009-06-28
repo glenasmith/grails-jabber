@@ -20,17 +20,19 @@ This plugin provides the opportunity to send and receive Chat messages via the J
 
     def doWithSpring = {
 
+        boolean listenerDefined = false
+
         application.serviceClasses?.each { service ->
             def serviceClass = service.getClazz()
             def exposeList = GrailsClassUtils.getStaticPropertyValue(serviceClass, 'expose')
-            if (exposeList != null && exposeList.contains('jabber')) {
+            if (exposeList != null && exposeList.contains('jabber') && !listenerDefined) {
                 println "adding Jabber listener for ${service.shortName} to Spring"
 
                 def method = GrailsClassUtils.getStaticPropertyValue(serviceClass, 'jabberListenerMethod')
                 if (!method)
                     method = "onJabberMessage"
 
-		"${service.propertyName}JabberListener"(org.codehaus.groovy.grails.jabber.ChatListener) {
+		"GrailsPluginJabberListener"(org.codehaus.groovy.grails.jabber.ChatListener) {
                     host = CFG.config.chat.host
                     port = CFG.config.chat.port
                     serviceName = CFG.config.chat.serviceName
@@ -40,23 +42,37 @@ This plugin provides the opportunity to send and receive Chat messages via the J
                     targetService = ref("${service.propertyName}")
 
                 }
+                listenerDefined = true
 
 				
             }
+        }
+        if (!listenerDefined) {
+
+            "GrailsPluginJabberListener"(org.codehaus.groovy.grails.jabber.ChatListener) {
+                    host = CFG.config.chat.host
+                    port = CFG.config.chat.port
+                    serviceName = CFG.config.chat.serviceName
+                    userName = CFG.config.chat.username
+                    password = CFG.config.chat.password
+             }
+
         }
 
     }
    
     def doWithApplicationContext = { applicationContext ->
 
+        boolean listenerStarted = false
         application.serviceClasses?.each { service ->
             def serviceClass = service.getClazz()
             def exposeList = GrailsClassUtils.getStaticPropertyValue(serviceClass, 'expose')
-            if (exposeList!=null && exposeList.contains('jabber')) {
+            if (exposeList!=null && exposeList.contains('jabber') && !listenerStarted) {
                 println "Starting Jabber listener for ${service.shortName}"
-                def listener = applicationContext.getBean("${service.propertyName}JabberListener")
+                def listener = applicationContext.getBean("GrailsPluginJabberListener")
                 listener.listen()
                 println "Added listener ok ${listener.dump()}"
+                listenerStarted = true
             }
         }
 
@@ -87,23 +103,15 @@ This plugin provides the opportunity to send and receive Chat messages via the J
             password: CFG.config.chat.password
         )
 
+        def listener = applicationContext.getBean("GrailsPluginJabberListener")
 
         application.serviceClasses?.each { service ->
-            def mc = service.metaClass
-            
-            def serviceClass = service.getClazz()
-            def exposeList = GrailsClassUtils.getStaticPropertyValue(serviceClass, 'expose')
-            if (exposeList != null && exposeList.contains('jabber')) {
-                def listener = applicationContext.getBean("${service.propertyName}JabberListener")
-                mc.sendJabberMessage = sendJabberMessage.curry(listener)
-            } else {
-                mc.sendJabberMessage = sendJabberMessage.curry(cl)
-            }
-            
+            def mc = service.metaClass          
+            mc.sendJabberMessage = sendJabberMessage.curry(listener)
         }
         application.controllerClasses?.each { controller ->
             def mc = controller.metaClass
-            mc.sendJabberMessage = sendJabberMessage.curry(cl)
+            mc.sendJabberMessage = sendJabberMessage.curry(listener)
     	}
 
     }

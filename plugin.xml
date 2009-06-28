@@ -7,8 +7,6 @@
   <documentation>http://grails.org/Jabber+Plugin</documentation>
   <resources>
     <resource>Config</resource>
-    <resource>DataSource</resource>
-    <resource>UrlMappings</resource>
   </resources>
   <dependencies />
 </plugin>
