@@ -28,9 +28,9 @@ This plugin provides the opportunity to send and receive Chat messages via the J
 
                 def method = GrailsClassUtils.getStaticPropertyValue(serviceClass, 'jabberListenerMethod')
                 if (!method)
-                method = "onJabberMessage"
+                    method = "onJabberMessage"
 
-				"${service.propertyName}JabberListener"(org.codehaus.groovy.grails.jabber.ChatListener) {
+		"${service.propertyName}JabberListener"(org.codehaus.groovy.grails.jabber.ChatListener) {
                     host = CFG.config.chat.host
                     port = CFG.config.chat.port
                     serviceName = CFG.config.chat.serviceName

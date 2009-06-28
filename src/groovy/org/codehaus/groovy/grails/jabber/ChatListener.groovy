@@ -36,7 +36,6 @@ class ChatListener {
 
     def connect = {
 
-
         ConnectionConfiguration cc = new ConnectionConfiguration(host,
             port, serviceName)
 
@@ -45,13 +44,7 @@ class ChatListener {
         log.debug "Connecting to Jabber server"
         connection.connect()
         connection.login(userName, password, userName + Long.toHexString(System.currentTimeMillis()))
-        log.debug "Connected to Jabber server: ${connection.isConnected()}"
-
-        
-
-        log.error "Jabber Connection failed: $e.message", e
-
-        
+        log.debug "Connected to Jabber server: ${connection.isConnected()}"  
 
     }
 
