@@ -3,11 +3,8 @@ import org.codehaus.groovy.grails.jabber.ChatListener
 import org.apache.log4j.Logger
 
 /**
- * Created by IntelliJ IDEA.
- * User: glen
- * Date: Oct 2, 2008
- * Time: 8:28:57 PM
- * To change this template use File | Settings | File Templates.
+ * Some sample tests that confirm things are working with a local OpenFire server.
+ * Really just smoke tests to see messages are passing around ok.
  */
 class ChatListenerTests extends GroovyTestCase {
 
@@ -15,10 +12,6 @@ class ChatListenerTests extends GroovyTestCase {
 
     void OFFtestSend() {
 
-        /*
-        ChatListener cl = new ChatListener(host: 'talk.google.com', serviceName: 'gmail.com',
-                                userName: 'bytecode.com.au@gmail.com', password: 'tanstaafl')
-        */
 
         ChatListener cl = new ChatListener(host: 'localhost', // serviceName: 'decaf.local',
                                 userName: 'glen', password: 'password')
