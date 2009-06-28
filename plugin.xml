@@ -4,7 +4,7 @@
   <title>Jabber Plugin</title>
   <description>This plugin provides the opportunity to send and receive Chat messages via the Jabber API.
 </description>
-  <documentation>http://grails.org/Jabber+Plugin</documentation>
+  <documentation>http://grails.org/plugin/jabber</documentation>
   <resources>
     <resource>Config</resource>
   </resources>

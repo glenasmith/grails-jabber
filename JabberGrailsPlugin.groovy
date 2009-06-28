@@ -16,7 +16,7 @@ This plugin provides the opportunity to send and receive Chat messages via the J
 '''
 
     // URL to the plugin's documentation
-    def documentation = "http://grails.org/Jabber+Plugin"
+    def documentation = "http://grails.org/plugin/jabber"
 
     def doWithSpring = {
 
