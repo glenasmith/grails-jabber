@@ -15,6 +15,8 @@ class JabberGrailsPlugin {
 This plugin provides the opportunity to send and receive Chat messages via the Jabber API.
 '''
 
+    def observe = ['services', 'controllers']
+
     // URL to the plugin's documentation
     def documentation = "http://grails.org/plugin/jabber"
 
@@ -106,20 +108,26 @@ This plugin provides the opportunity to send and receive Chat messages via the J
         def listener = applicationContext.getBean("GrailsPluginJabberListener")
 
         application.serviceClasses?.each { service ->
-            def mc = service.metaClass          
-            mc.sendJabberMessage = sendJabberMessage.curry(listener)
+            addSendMethodsToClass(listener, service)
         }
         application.controllerClasses?.each { controller ->
-            def mc = controller.metaClass
-            mc.sendJabberMessage = sendJabberMessage.curry(listener)
+            addSendMethodsToClass(listener, controller)
     	}
 
     }
 	
     def onChange = { event ->
-        // TODO Implement code that is executed when any artefact that this plugin is
-        // watching is modified and reloaded. The event contains: event.source,
-        // event.application, event.manager, event.ctx, and event.plugin.
+        if (event.source && event.ctx) {
+            def jabberListener = event.ctx.getBean('GrailsPluginJabberListener')
+
+            if (application.isControllerClass(event.source) || application.isServiceClass(event.source)) {
+                addSendMethodsToClass(jabberListener, event.source)
+            }
+        }
+    }
+
+    def addSendMethodsToClass = { jabberListener, clazz ->
+        clazz.metaClass.sendJabberMessage = sendJabberMessage.curry(jabberListener)
     }
 
     def onConfigChange = { event ->
